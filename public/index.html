@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>StoryRoute</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,13 +22,21 @@ gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-R6WMQEWZMV"></script>
 <script>gtag('js',new Date());gtag('config','G-R6WMQEWZMV');</script>
 <style>
+:root{
+  --orange:#f0a500;--orange-dark:#d4920a;--orange-glow:rgba(240,165,0,0.4);
+  --navy:#1a2240;--green:#22c55e;--red:#ef4444;
+  --glass:rgba(255,255,255,0.82);--glass-border:rgba(255,255,255,0.6);
+  --shadow-up:0 -6px 28px rgba(0,0,0,0.1);
+  --shadow-card:0 2px 12px rgba(0,0,0,0.07);
+  --radius-card:16px;
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:sans-serif;overflow:hidden;background:#f0f0f0;}
+body{font-family:'Inter',sans-serif;overflow:hidden;background:#f0f0f0;}
 #map{width:100vw;height:100vh;}
 .leaflet-control-container{display:none!important;}
 
 /* SPLASH */
-#splash{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;}
+#splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#fff 55%,rgba(240,165,0,0.05) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;}
 #splash-logo{width:88px;height:88px;border-radius:20px;}
 #splash-title{font-size:30px;font-weight:800;color:#1a2240;}
 #splash-title span{color:#f0a500;}
@@ -41,18 +52,19 @@ body{font-family:sans-serif;overflow:hidden;background:#f0f0f0;}
 #splash-modeloop .ml-arrow{color:#f0a500;font-weight:800;}
 
 /* HEADER */
-#header{position:fixed;top:0;left:0;right:0;z-index:1010;padding:10px 16px;background:rgba(255,255,255,0.97);border-bottom:1px solid rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+#header{position:fixed;top:0;left:0;right:0;z-index:1010;padding:10px 16px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 12px rgba(0,0,0,0.07);}
 #app-name{font-size:20px;font-weight:800;color:#1a2240;margin-left:10px;}
 #app-name span{color:#f0a500;}
 #header-right{display:flex;align-items:center;gap:8px;}
 #status{font-size:11px;background:rgba(0,0,0,0.05);border:1px solid rgba(0,0,0,0.08);padding:4px 10px;border-radius:12px;color:#666;max-width:150px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #voice-badge{font-size:10px;padding:3px 8px;border-radius:8px;display:none;white-space:nowrap;}
-#voice-badge.on{display:inline-block;background:rgba(34,197,94,0.12);color:#15803d;}
+#voice-badge.on{display:inline-block;background:rgba(34,197,94,0.12);color:#15803d;animation:badge-pulse 2.2s ease-in-out infinite;}
 #voice-badge.loading{display:inline-block;background:rgba(240,165,0,0.12);color:#b36b00;}
-#menu-btn{width:52px;height:52px;background:#f0a500;color:#fff;border:none;border-radius:12px;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(240,165,0,0.4);touch-action:manipulation;flex-shrink:0;}
+#menu-btn{width:52px;height:52px;background:linear-gradient(135deg,#f0a500,#d4920a);color:#fff;border:none;border-radius:12px;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(240,165,0,0.45);touch-action:manipulation;flex-shrink:0;transition:box-shadow .2s,transform .1s;}
+#menu-btn:active{transform:scale(0.96);}
 
 /* MODE TOGGLE */
-#mode-toggle{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:999;display:flex;background:rgba(255,255,255,0.97);border:1px solid rgba(0,0,0,0.1);border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);white-space:nowrap;}
+#mode-toggle{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:999;display:flex;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.1);white-space:nowrap;}
 .mode-btn{padding:8px 14px;font-size:12px;font-weight:700;border:none;background:transparent;color:rgba(0,0,0,0.4);cursor:pointer;touch-action:manipulation;}
 .mode-btn.active{background:#f0a500;color:#fff;}
 
@@ -82,7 +94,7 @@ body{font-family:sans-serif;overflow:hidden;background:#f0f0f0;}
 .zbtn:active{background:#f0a500;color:#fff;}
 
 /* STORY CARD */
-#story{position:fixed;bottom:74px;left:0;right:0;padding:14px 16px;background:#fff;border-top:1px solid rgba(0,0,0,0.08);display:none;z-index:1001;box-shadow:0 -4px 20px rgba(0,0,0,0.08);transition:bottom .25s;}
+#story{position:fixed;bottom:74px;left:0;right:0;padding:14px 16px;background:#fff;border-top:1px solid rgba(0,0,0,0.07);border-radius:20px 20px 0 0;display:none;z-index:1001;box-shadow:var(--shadow-up);transition:bottom .25s;}
 #story-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 #story-name{font-size:10px;font-weight:700;color:#f0a500;text-transform:uppercase;letter-spacing:1.2px;}
 #story-type-badge{font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.06);color:#777;margin-left:6px;}
@@ -111,8 +123,9 @@ body{font-family:sans-serif;overflow:hidden;background:#f0f0f0;}
 
 /* BOTTOM BAR */
 #bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:1002;background:#fff;border-top:1px solid rgba(0,0,0,0.08);padding:10px 16px 14px;box-shadow:0 -2px 12px rgba(0,0,0,0.08);}
-#tour-btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:800;font-size:17px;cursor:pointer;background:#22c55e;color:#fff;box-shadow:0 3px 12px rgba(34,197,94,0.3);touch-action:manipulation;}
-#tour-btn.stop{background:#ef4444;box-shadow:0 3px 12px rgba(239,68,68,0.3);}
+#tour-btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:800;font-size:17px;cursor:pointer;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 4px 16px rgba(34,197,94,0.35);touch-action:manipulation;transition:box-shadow .2s,transform .1s;}
+#tour-btn:active{transform:scale(0.98);}
+#tour-btn.stop{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,0.35);}
 #travel-mode{display:none;justify-content:center;gap:8px;margin-top:10px;}
 #travel-mode.visible{display:flex;}
 .tm-btn{flex:1;padding:10px 4px;background:#fff;border:2px solid rgba(0,0,0,0.1);border-radius:10px;font-size:12px;font-weight:700;color:#666;cursor:pointer;text-align:center;touch-action:manipulation;}
@@ -127,7 +140,7 @@ body{font-family:sans-serif;overflow:hidden;background:#f0f0f0;}
 #stories-area-name{font-size:11px;color:#999;margin-top:2px;}
 #gen-story-btn{padding:8px 14px;background:#f0a500;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;}
 #gen-story-btn:disabled{background:#ddd;color:#aaa;}
-.story-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.story-card{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:var(--radius-card);padding:14px;margin-bottom:10px;box-shadow:var(--shadow-card);}
 .story-card-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .story-card-icon{font-size:20px;flex-shrink:0;}
 .story-card-meta{flex:1;}
@@ -264,6 +277,7 @@ textarea.fb-input{height:120px;resize:none;}
 .lm-dot.visited{opacity:0.3;filter:grayscale(1);}
 .lm-dot.playing{animation:lm-pulse 1.4s ease-in-out infinite;}
 @keyframes lm-pulse{0%,100%{filter:drop-shadow(0 0 3px rgba(240,165,0,0.5));}50%{filter:drop-shadow(0 0 10px rgba(240,165,0,1)) brightness(1.3);}}
+@keyframes badge-pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.45);}60%{box-shadow:0 0 0 5px rgba(34,197,94,0);}}
 .nb-dot{font-size:28px;cursor:pointer;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.3));transition:transform .15s;}
 .nb-dot:hover{transform:scale(1.15);}
 .nb-dot.visited{opacity:0.25;filter:grayscale(1);}
@@ -285,7 +299,7 @@ textarea.fb-input{height:120px;resize:none;}
   <div id="splash-sub">Historical stories about the places around you.</div>
   <button id="splash-btn" onclick="openMap()" id="splash-btn">Open Map</button>
   <div id="splash-hint">Allow location access when prompted</div>
-  <div id="splash-version">v2.5.0</div>
+  <div id="splash-version">v2.6.0</div>
   <button id="splash-force" onclick="forceUpdate()">🔄 Force update</button>
   <a id="splash-modeloop" href="http://modeloop.net/Other-Products" target="_blank" rel="noopener noreferrer">
     <span class="ml-tag">Modeloop</span>
@@ -499,7 +513,7 @@ textarea.fb-input{height:120px;resize:none;}
 <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" onload="initSupabaseEarly()"></script>
 <script>
 // ═══════════════════════════════════════════════════════════════
-// STORYROUTE v2.5.0
+// STORYROUTE v2.6.0
 // ═══════════════════════════════════════════════════════════════
 
 // ── CONSTANTS ──────────────────────────────────────────────────
@@ -667,7 +681,7 @@ function callAIStream(prompt, onSentence, ctrl){
       var last=0,m;
       while((m=re.exec(pending))!==null){
         var s=m[0].trim();
-        if(s.length>=12&&onSentence){try{onSentence(s);}catch(e){}}
+        if(s.length>=3&&onSentence){try{onSentence(s);}catch(e){}}
         last=re.lastIndex;
       }
       pending=pending.slice(last);
@@ -1188,14 +1202,18 @@ function cancelAudio(){
   if(currentAudio){currentAudio.pause();currentAudio=null;}
   if(activeStream){try{activeStream.cancel();}catch(e){}activeStream=null;}
 }
-// Normalise text for more natural TTS: force pauses after sentences + em-dashes, collapse whitespace.
+// Normalise text for more natural TTS: strip markdown, force pauses, collapse whitespace.
 function prepareForTTS(text){
   if(!text)return '';
   return String(text)
-    .replace(/\s*—\s*/g,', ')          // em-dash → comma pause (many TTS engines don't pause on —)
+    .replace(/\*\*([^*]+)\*\*/g,'$1')  // strip bold
+    .replace(/\*([^*]+)\*/g,'$1')      // strip italic
+    .replace(/_([^_]+)_/g,'$1')        // strip underscore italic
+    .replace(/^#+\s+/gm,'')            // strip markdown headings
+    .replace(/\s*—\s*/g,', ')          // em-dash → comma pause
     .replace(/\s*–\s*/g,', ')          // en-dash → comma pause
     .replace(/\.\.\./g,'… ')           // ellipsis → breath
-    .replace(/([.!?])(["')\]]?)(\s|$)/g,'$1$2  ')  // double-space after sentence end helps prosody
+    .replace(/([.!?])(["')\]]?)(\s|$)/g,'$1$2  ')  // double-space after sentence end
     .replace(/\s{3,}/g,'  ')
     .trim();
 }
